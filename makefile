@@ -42,7 +42,10 @@ build/%.o : %.s
 #--------------------------------------
 .PHONY: clean run
 
-all: $(OUTPUT)
+all: build $(OUTPUT)
+
+build:
+	@mkdir -p $@
 
 clean:
 	@rm -rf $(OFILES) $(OUTPUT) $(PRECOMPILED)

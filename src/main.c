@@ -9,7 +9,6 @@
 #include "numbers.h"
 #include "plot.h"
 #include "profile.h"
-#include "mandelbrot.h"
 #include "matrix2.h"
 #include "vectors.h"
 
@@ -134,7 +133,6 @@ int main(int argc, char *argv[]) {
         draw_circle_fast(150, 50, 50, 0xff00ff);
         plot(frame % screen.width, (100+(isin(frame<<8)>>8)) % screen.height, 0xff0000);
 
-        mandelbrot(500000000, 5000, 5000);
         //printf("\nisin(%d):\t%d", frame, (short)isin(frame));
 
         /*plot(frame % screen.width, 100+(int)(mysin((float)frame/40)*100) % screen.height, 0xff0000);*/
