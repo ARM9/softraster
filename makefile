@@ -1,28 +1,32 @@
 #DEBUG	:= 1
 
 CC	:= gcc
-AS	:= as
+AS	:= gcc
 LD	:= gcc
 GDB	:= gdb
 DDD := ddd
+LZSS	:= lzss
 
-CFLAGS	:= -Wall -Wextra -pedantic -std=gnu99 -march=native
-ASFLAGS	:= 
+CFLAGS	:= -Wall -Wextra -pedantic -std=gnu99 -march=native -masm=intel
+ASFLAGS	:= -march=native -masm=intel
 LDFLAGS := 
 LIBS	:= -lmingw32 -lSDL2main -lSDL2 -lm
 
 ifeq (1,$(DEBUG))
-  	CFLAGS := $(CFLAGS) -g -O0 -DDEBUG
+  	CFLAGS := $(CFLAGS) -g -Og -DDEBUG
 else
   	CFLAGS := $(CFLAGS) -O2 -fomit-frame-pointer
 endif
 
-SOURCES		:= src
+SOURCES		:= src gfx
 INCLUDES	:= include
+DATA		:= data gfx
+GFX			:= gfx
 
-CFILES	:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
-SFILES	:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
-OFILES	:= $(CFILES:.c=.o) $(SFILES:.s=.o)
+CFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
+SFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
+BINFILES	:= $(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.bin)))
+OFILES		:= $(CFILES:%.c=build/%.o) $(SFILES:%.s=build/%.o)
 PRECOMPILED	:= include/precompiled.h.gch
 
 export VPATH	:= $(foreach dir,$(SOURCES),$(CURDIR)/$(dir))
@@ -30,11 +34,11 @@ export INCLUDE	:= $(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir))
 
 export OUTPUT	:= $(shell basename $(CURDIR))
 #--------------------------------------
-%.o : %.c
+build/%.o : %.c
 	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
-%.o : %.s
-	$(AS) $(ASFLAGS) $(INCLUDE) -o $@ $<
+build/%.o : %.s
+	$(AS) $(ASFLAGS) $(INCLUDE) -c $< -o $@
 #--------------------------------------
 .PHONY: clean run
 

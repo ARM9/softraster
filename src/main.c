@@ -1,25 +1,20 @@
 #include "precompiled.h"
 
+#include "assembly.h"
+
+#include "assets.h"
+
 #include "list.h"
+#include "lzss.h"
 #include "numbers.h"
 #include "plot.h"
 #include "profile.h"
-
-/* Math stuff ****************************************/
-typedef struct vec2_t {
-    int x, y;
-} vec2_t;
-
-typedef struct vec3_t {
-    int x, y, z;
-} vec3_t;
-
-typedef struct vec4_t {
-    int x, y, z, w;
-} vec4_t;
+#include "mandelbrot.h"
+#include "matrix2.h"
+#include "vectors.h"
 
 typedef struct triangle_t {
-    vec4_t v[3];
+    vec4 v[3];
 } triangle_t;
 
 typedef struct polygon_t {
@@ -28,11 +23,11 @@ typedef struct polygon_t {
 } polygon_t;
 
 typedef struct object3d_t {
-    vec3_t position;
+    vec3 position;
     polygon_t *polygon;
 } object3d_t;
 
-object3d_t *object3d_new(vec3_t p_position, polygon_t *p_polygon)
+object3d_t *object3d_new(vec3 p_position, polygon_t *p_polygon)
 {
     object3d_t *t_obj = malloc(sizeof(object3d_t));
     t_obj->position.x = p_position.x;
@@ -58,7 +53,7 @@ int main(int argc, char *argv[]) {
     screen_t screen = {320, 240, NULL, 0};
     set_screen(&screen); // it's on the stack I guess but fuck it
 
-    object3d_t *player = object3d_new((vec3_t){10, 10, 10}, &cube);
+    object3d_t *player = object3d_new((vec3){10, 10, 10}, &cube);
 
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
         fprintf(stderr, "failed to init SDL\n");
@@ -96,6 +91,19 @@ int main(int argc, char *argv[]) {
     printf("\nisin(%4x):\t%8d", 0xe000, isin(0xe000>>1));
     printf("\nisin(%4x):\t%8d", 0xffff, isin(0xffff>>1));
 
+    /*putchar('a');*/
+    asm(masm(
+        mov cl, '\n';
+        call putchar;
+        mov cl, 'a';
+        call putchar
+        )
+        :::"rax"
+       );
+
+    char *buffer = malloc(ballBitmapLen);
+    lzssDecompress(buffer, ball_lz77Bitmap);
+
     while(running) {
         SDL_Event event;
         while(SDL_PollEvent(&event)) {
@@ -126,12 +134,13 @@ int main(int argc, char *argv[]) {
         draw_circle_fast(150, 50, 50, 0xff00ff);
         plot(frame % screen.width, (100+(isin(frame<<8)>>8)) % screen.height, 0xff0000);
 
+        mandelbrot(500000000, 5000, 5000);
         //printf("\nisin(%d):\t%d", frame, (short)isin(frame));
 
         /*plot(frame % screen.width, 100+(int)(mysin((float)frame/40)*100) % screen.height, 0xff0000);*/
         /*plot(frame % screen.width, 100+(int)(mycos((float)frame/20)*100), 0x00ff00);*/
 
-        /*for(int i = 0; i < player->polygon->size/sizeof(vec4_t); i++) {*/
+        /*for(int i = 0; i < player->polygon->size/sizeof(vec4); i++) {*/
             /*plot(player->polygon->triangles->v[i].x+frame, player->polygon->triangles->v[i].y, player->polygon->triangles->v[i].w);*/
         /*}*/
 
