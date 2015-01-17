@@ -1,7 +1,15 @@
 #ifndef NUMBERS_H
 #define NUMBERS_H
+#include <stdint.h>
 
-typedef int fixed;
+typedef uint8_t u8;
+typedef int8_t s8;
+typedef uint16_t u16;
+typedef int16_t s16;
+typedef uint32_t u32;
+typedef int32_t s32;
+
+typedef s32 fixed;
 
 #define FIXED_BITS  8
 #define FIXED_ONE   (1<<FIXED_BITS)//0x100
@@ -16,8 +24,8 @@ typedef int fixed;
 #define fixceil(A) f2i((A)+(FIXED_ONE-1))
 #define fixinv(A) fixdiv(FIXED_ONE,(A))
 
-short sqrt16(short x);
-int isin(int x);
+s16 sqrt16(s16 x);
+s32 isin(s32 x);
 float mysinf(float a);
 
 #endif //NUMBERS_H

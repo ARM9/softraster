@@ -2,24 +2,18 @@
 #include "matrix2.h"
 
 inline void mat2Set(mat2 *mat, fixed n11, fixed n12, fixed n21, fixed n22){
-	mat->n11 = n11;
-	mat->n12 = n12;
-	mat->n21 = n21;
-	mat->n22 = n22;
+	mat->n11 = n11; mat->n12 = n12;
+	mat->n21 = n21; mat->n22 = n22;
 }
 
 inline void mat2Copy(mat2 *dest, mat2 *src){
-	dest->n11 = src->n11;
-	dest->n12 = src->n12;
-	dest->n21 = src->n21;
-	dest->n22 = src->n22;
+	dest->n11 = src->n11; dest->n12 = src->n12;
+	dest->n21 = src->n21; dest->n22 = src->n22;
 }
 
 inline void mat2Identity(mat2 *a){
-	a->n11 = 1;
-	a->n12 = 0;
-	a->n21 = 0;
-	a->n22 = 1;
+	a->n11 = 1; a->n12 = 0;
+	a->n21 = 0; a->n22 = 1;
 }
 
 inline fixed mat2Det(mat2 *a){
@@ -27,17 +21,13 @@ inline fixed mat2Det(mat2 *a){
 }
 
 inline void mat2Add(mat2 *dest, mat2 *a, mat2 *b){
-	dest->n11 = a->n11 + b->n11;
-	dest->n12 = a->n12 + b->n12;
-	dest->n21 = a->n21 + b->n21;
-	dest->n22 = a->n22 + b->n22;
+	dest->n11 = a->n11 + b->n11; dest->n12 = a->n12 + b->n12;
+	dest->n21 = a->n21 + b->n21; dest->n22 = a->n22 + b->n22;
 }
 
 inline void mat2Sub(mat2 *dest, mat2 *a, mat2 *b){
-	dest->n11 = a->n11 - b->n11;
-	dest->n12 = a->n12 - b->n12;
-	dest->n21 = a->n21 - b->n21;
-	dest->n22 = a->n22 - b->n22;
+	dest->n11 = a->n11 - b->n11; dest->n12 = a->n12 - b->n12;
+	dest->n21 = a->n21 - b->n21; dest->n22 = a->n22 - b->n22;
 }
 
 inline void mat2Mult(mat2 *dest, mat2 *a, mat2 *b){
