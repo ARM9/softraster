@@ -29,7 +29,7 @@ short sqrt16(short x)
  * 0x6000=q3
  * 0x8000=q4
  */
-inline int isin(int x)
+int isin(int x)
 {
   const int qN = 13, qA = 12, qP = 15, qR = 2*qN-qP, qS = qN+qP+1-qA;
   x = x << (30 - qN);
@@ -38,9 +38,8 @@ inline int isin(int x)
   x = x >> (30 - qN);
   return x * ((3 << qP) - (x * x >> qR)) >> qS;
 }
-#define icos(x) isin(x+0x2000)
 
-inline float mysinf(float a)
+float mysinf(float a)
 {
   float t = a, y = 0.f;
   float d = 1.f;

@@ -9,7 +9,7 @@ typedef struct screen_t {
 
 screen_t *g_Screen;
 
-void set_screen(screen_t *p_screen);
+void set_screen(screen_t * const p_screen);
 
 void plot(int x, int y, int color);
 void framebuffer_clear(int color);

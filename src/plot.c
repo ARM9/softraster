@@ -1,12 +1,14 @@
 #include "precompiled.h"
+#include "numbers.h"
 #include "plot.h"
 
-inline void set_screen(screen_t *p_screen){
+inline void set_screen(screen_t * const p_screen){
   g_Screen = p_screen;
 }
 
 inline void plot(int x, int y, int color) {
   g_Screen->pixels[y * g_Screen->pitch + x] = color;
+  /*g_Screen->pixels[y * 320 + x] = color;*/
 }
 
 inline void framebuffer_clear(int color)
@@ -123,6 +125,73 @@ void draw_line2(int x1, int y1, int x2, int y2, int color)
     e2 = err;
     if (e2 >-dx) { err -= dy; x1 += sx; }
     if (e2 < dy) { err += dx; y1 += sy; }
+  }
+}
+
+void draw_rotated_image_i(int *img, int width, int height, int angle)
+{
+  int hwidth = width / 2;
+  int hheight = height / 2;
+
+  /*double sinma = sin(-angle);*/
+  /*double cosma = cos(-angle);*/
+  int sinma = isin(angle);
+  int cosma = icos(angle);
+
+  for(int y = 0; y < height; y++) {
+    for(int x = 0; x < width; x++) {
+      int xt = x - hwidth;
+      int yt = y - hheight;
+
+      /*int xs = (int)round((cosma * xt - sinma * yt) + hwidth);*/
+      /*int ys = (int)round((sinma * xt + cosma * yt) + hheight);*/
+
+#define fixmul32(a, b) (((a)*(b))>>12)
+      /*int xs = fixmul32(xt, cosma) - fixmul32(yt, sinma) + hwidth;*/
+      /*int ys = fixmul32(xt, sinma) + fixmul32(yt, cosma) + hheight;*/
+      int xs = fixmul32(yt, sinma) + fixmul32(xt, cosma) + hwidth;
+      int ys = fixmul32(yt, cosma) - fixmul32(xt, sinma) + hheight;
+
+      if(xs >= 0 && xs < width && ys >= 0 && ys < height) {
+        /* set target pixel (x,y) to color at (xs,ys) */
+        plot(x, y, img[ys * height + xs]&0xFFFF);
+      } else {
+        /* set target pixel (x,y) to some default background */
+        plot(x, y, 0);
+      }
+    }
+  }
+}
+
+void draw_rotated_image(int *img, int width, int height, double angle)
+{
+  int hwidth = width / 2;
+  int hheight = height / 2;
+
+  double sinma = sin(-angle);
+  double cosma = cos(-angle);
+  /*int sinma = isin(angle);*/
+  /*int cosma = icos(angle);*/
+
+  for(int y = 0; y < height; y++) {
+    for(int x = 0; x < width; x++) {
+      int xt = x - hwidth;
+      int yt = y - hheight;
+
+      int xs = (int)round((cosma * xt - sinma * yt) + hwidth);
+      int ys = (int)round((sinma * xt + cosma * yt) + hheight);
+
+      /*int xs = fixmul(cosma, xt) - fixmul(sinma, yt) + hwidth;*/
+      /*int ys = fixmul(sinma, xt) + fixmul(cosma, yt) + hheight;*/
+
+      if(xs >= 0 && xs < width && ys >= 0 && ys < height) {
+        /* set target pixel (x,y) to color at (xs,ys) */
+        plot(x, y, img[ys * height + xs]);
+      } else {
+        /* set target pixel (x,y) to some default background */
+        plot(x, y, 0);
+      }
+    }
   }
 }
 // vim:sts=2 sw=2

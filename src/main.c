@@ -49,7 +49,8 @@ int main(int argc, char *argv[]) {
     SDL_Window *mainWindow;
     SDL_Renderer *mainRenderer;
     SDL_Texture *framebuffer;
-    screen_t screen = {320, 240, NULL, 0};
+
+    screen_t screen = {320, 240, NULL, 320};
     set_screen(&screen); // it's on the stack I guess but fuck it
 
     object3d_t *player = object3d_new((vec3){10, 10, 10}, &cube);
@@ -101,7 +102,7 @@ int main(int argc, char *argv[]) {
        );
 
     char *buffer = malloc(ballBitmapLen);
-    lzssDecompress(buffer, ball_lz77Bitmap);
+    lzssDecompress(buffer, (char*)ball_lz77Bitmap);
 
     while(running) {
         SDL_Event event;
@@ -114,7 +115,7 @@ int main(int argc, char *argv[]) {
                     break;
             }
         }
-
+        
         SDL_LockTexture(framebuffer, NULL, (void*)&screen.pixels, &screen.pitch);
         screen.pitch >>= 2;
 
@@ -133,6 +134,12 @@ int main(int argc, char *argv[]) {
         draw_circle_fast(150, 50, 50, 0xff00ff);
         plot(frame % screen.width, (100+(isin(frame<<8)>>8)) % screen.height, 0xff0000);
 
+        static double angle = 0.0;
+        angle += 0.01;
+        /*draw_rotated_image(ballBitmap, 64, 64, angle);*/
+        static int iangle = 0;
+        iangle+=32;
+        draw_rotated_image_i(ballBitmap, 64, 64, iangle);
         //printf("\nisin(%d):\t%d", frame, (short)isin(frame));
 
         /*plot(frame % screen.width, 100+(int)(mysin((float)frame/40)*100) % screen.height, 0xff0000);*/
