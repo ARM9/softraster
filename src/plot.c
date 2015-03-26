@@ -64,15 +64,13 @@ void draw_circle_fast(int x1, int y1, int r, int color)
 
 void draw_line(int x1,int y1,int x2,int y2, int color)
 {
-  int dx, dy, i, e;
+  int dx, dy, e;
   int incx, incy, inc1, inc2;
   int x,y;
 
-  dx = x2 - x1;
-  dy = y2 - y1;
+  dx = abs(x2 - x1);
+  dy = abs(y2 - y1);
 
-  if(dx < 0) dx = -dx;
-  if(dy < 0) dy = -dy;
   incx = 1;
   if(x2 < x1) incx = -1;
   incy = 1;
@@ -80,12 +78,12 @@ void draw_line(int x1,int y1,int x2,int y2, int color)
   x=x1;
   y=y1;
 
+  plot(x, y, color);
   if(dx > dy){
-    plot(x, y, color);
     e = 2*dy - dx;
     inc1 = 2*( dy -dx);
     inc2 = 2*dy;
-    for(i = 0; i < dx; i++){
+    for(int i = 0; i < dx; i++){
       if(e >= 0){
         y += incy;
         e += inc1;
@@ -96,11 +94,10 @@ void draw_line(int x1,int y1,int x2,int y2, int color)
       plot(x, y, color);
     }
   }else{
-    plot(x, y, color);
     e = 2*dx - dy;
     inc1 = 2*( dx - dy);
     inc2 = 2*dx;
-    for(i = 0; i < dy; i++){
+    for(int i = 0; i < dy; i++){
       if(e >= 0){
         x += incx;
         e += inc1;
@@ -133,8 +130,6 @@ void draw_rotated_image_i(int *img, int width, int height, int angle)
   int hwidth = width / 2;
   int hheight = height / 2;
 
-  /*double sinma = sin(-angle);*/
-  /*double cosma = cos(-angle);*/
   int sinma = isin(angle);
   int cosma = icos(angle);
 
@@ -156,7 +151,6 @@ void draw_rotated_image_i(int *img, int width, int height, int angle)
         /* set target pixel (x,y) to color at (xs,ys) */
         plot(x, y, img[ys * height + xs]&0xFFFF);
       } else {
-        /* set target pixel (x,y) to some default background */
         plot(x, y, 0);
       }
     }
@@ -170,8 +164,6 @@ void draw_rotated_image(int *img, int width, int height, double angle)
 
   double sinma = sin(-angle);
   double cosma = cos(-angle);
-  /*int sinma = isin(angle);*/
-  /*int cosma = icos(angle);*/
 
   for(int y = 0; y < height; y++) {
     for(int x = 0; x < width; x++) {
@@ -181,14 +173,10 @@ void draw_rotated_image(int *img, int width, int height, double angle)
       int xs = (int)round((cosma * xt - sinma * yt) + hwidth);
       int ys = (int)round((sinma * xt + cosma * yt) + hheight);
 
-      /*int xs = fixmul(cosma, xt) - fixmul(sinma, yt) + hwidth;*/
-      /*int ys = fixmul(sinma, xt) + fixmul(cosma, yt) + hheight;*/
-
       if(xs >= 0 && xs < width && ys >= 0 && ys < height) {
         /* set target pixel (x,y) to color at (xs,ys) */
         plot(x, y, img[ys * height + xs]);
       } else {
-        /* set target pixel (x,y) to some default background */
         plot(x, y, 0);
       }
     }

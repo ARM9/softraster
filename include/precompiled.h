@@ -11,4 +11,6 @@
 
 #include <SDL2/SDL.h>
 
+//#include "luts.h"
+
 #endif //PRECOMPILED_H

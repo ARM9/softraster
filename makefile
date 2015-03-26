@@ -1,4 +1,4 @@
-#DEBUG	:= 1
+DEBUG	:= 1
 
 CC	:= gcc
 AS	:= gcc
@@ -10,12 +10,17 @@ LZSS	:= lzss
 CFLAGS	:= -Wall -Wextra -pedantic -std=gnu99 -march=native -masm=intel
 ASFLAGS	:= -march=native -masm=intel
 LDFLAGS := 
-LIBS	:= -lmingw32 -lSDL2main -lSDL2 -lm
 
 ifeq (1,$(DEBUG))
-  	CFLAGS := $(CFLAGS) -g -Og -DDEBUG
+  	CFLAGS	:= $(CFLAGS) -g -Og -DDEBUG
 else
   	CFLAGS := $(CFLAGS) -O2 -fomit-frame-pointer
+endif
+
+ifeq ($(OS),Windows_NT)
+	LIBS	:= -lmingw32 -lSDL2main -lSDL2 -lm
+else
+	LIBS	:= -lSDL2
 endif
 
 SOURCES		:= src gfx
@@ -54,7 +59,8 @@ run: $(OUTPUT)
 	./$(OUTPUT)
 
 debug: $(OUTPUT)
-	$(DDD) --args $(OUTPUT)
+	$(GDB) $(OUTPUT)
+#	$(DDD) --args $(OUTPUT)
 
 $(OUTPUT): $(PRECOMPILED) $(OFILES)
 	$(LD) $(CFLAGS) -o $@ $(OFILES) $(LIBS)

@@ -75,33 +75,11 @@ int main(int argc, char *argv[]) {
     /* main loop*/
     int frame = 0;
 
-    int bg_color = 0;//0x4090c0;
+    int bg_color = 0x4092c4;
 
     int running = 1;
-    printf("\nisin(%4x):\t%8d", 0, isin(0));
-    printf("\nisin(%4x):\t%8d", 0x1000, isin(0x1000>>1));
-    printf("\nisin(%4x):\t%8d", 0x2000, isin(0x2000>>1));
-    printf("\nisin(%4x):\t%8d", 0x4000, isin(0x4000>>1));
-    printf("\nisin(%4x):\t%8d", 0x6000, isin(0x6000>>1));
-    printf("\nisin(%4x):\t%8d", 0x7000, isin(0x7000>>1));
-    printf("\nisin(%4x):\t%8d", 0x7fff, isin(0x7fff>>1));
-    printf("\nisin(%4x):\t%8d", 0x8000, isin(0x8000>>1));
-    printf("\nisin(%4x):\t%8d", 0xa000, isin(0xa000>>1));
-    printf("\nisin(%4x):\t%8d", 0xc000, isin(0xc000>>1));
-    printf("\nisin(%4x):\t%8d", 0xe000, isin(0xe000>>1));
-    printf("\nisin(%4x):\t%8d", 0xffff, isin(0xffff>>1));
 
-    /*putchar('a');*/
-    asm(masm(
-        mov cl, '\n';
-        call putchar;
-        mov cl, 'a';
-        call putchar
-        )
-        :::"rax"
-       );
-
-    char *buffer = malloc(ballBitmapLen);
+   int *buffer = malloc(ballBitmapLen);
     lzssDecompress(buffer, (char*)ball_lz77Bitmap);
 
     while(running) {
@@ -130,8 +108,8 @@ int main(int argc, char *argv[]) {
 
         draw_line2(20, 20, 20-2, 20-14, 0xff0000);
 
-        draw_circle(100, 100, 100, 0xffff00);
-        draw_circle_fast(150, 50, 50, 0xff00ff);
+        draw_circle(100, 100, 100, 0x123456);
+        draw_circle_fast(150, 50, 50, 0xabcdef);
         plot(frame % screen.width, (100+(isin(frame<<8)>>8)) % screen.height, 0xff0000);
 
         static double angle = 0.0;
@@ -140,10 +118,6 @@ int main(int argc, char *argv[]) {
         static int iangle = 0;
         iangle+=32;
         draw_rotated_image_i(ballBitmap, 64, 64, iangle);
-        //printf("\nisin(%d):\t%d", frame, (short)isin(frame));
-
-        /*plot(frame % screen.width, 100+(int)(mysin((float)frame/40)*100) % screen.height, 0xff0000);*/
-        /*plot(frame % screen.width, 100+(int)(mycos((float)frame/20)*100), 0x00ff00);*/
 
         /*for(int i = 0; i < player->polygon->size/sizeof(vec4); i++) {*/
             /*plot(player->polygon->triangles->v[i].x+frame, player->polygon->triangles->v[i].y, player->polygon->triangles->v[i].w);*/
