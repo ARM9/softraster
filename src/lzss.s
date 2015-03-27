@@ -68,11 +68,9 @@ _loop:
             mov rax, 0xFFF
             and rbx, rax
             inc rbx
-            // todo ask about rsb on x86
             // rsb rbx, dest // r6 = dest - r6 - 1
             mov rax, dest
             sub rax, rbx
-            dec rax
             mov rbx, rax
             _lz_copy:
                 mov al, [rbx]
