@@ -1,15 +1,15 @@
 #ifndef PLOT_H
 #define PLOT_H value
 
-typedef struct screen_t {
+typedef struct Screen_t {
   int width, height;
   uint32_t *pixels;
   int pitch;
-} screen_t;
+} Screen_t;
 
-screen_t *g_Screen;
+Screen_t *g_Screen;
 
-void set_screen(screen_t * const p_screen);
+void set_screen(Screen_t * const p_screen);
 
 void plot(int x, int y, int color);
 void framebuffer_clear(int color);

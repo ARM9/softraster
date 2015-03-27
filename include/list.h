@@ -1,15 +1,15 @@
 #ifndef LIST_H
 #define LIST_H
 
-struct list_node {
+struct ListNode {
     void *data;
-    struct list_node *next;
+    struct ListNode *next;
 };
 
-typedef struct list {
-    struct list_node *head;
-    struct list_node *tail;
+typedef struct List {
+    struct ListNode *head;
+    struct ListNode *tail;
     size_t size;
-} list;
+} List;
 
 #endif //LIST_H

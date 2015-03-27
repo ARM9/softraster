@@ -9,26 +9,23 @@
 #include "numbers.h"
 #include "plot.h"
 #include "profile.h"
+#include "triangle.h"
 #include "matrix2.h"
 #include "vectors.h"
 
-typedef struct triangle_t {
-    vec4 v[3];
-} triangle_t;
-
-typedef struct polygon_t {
-    triangle_t *triangles;
+typedef struct Poly_t {
+    Tri_t *triangles;
     int size;
-} polygon_t;
+} Poly_t;
 
-typedef struct object3d_t {
-    vec3 position;
-    polygon_t *polygon;
-} object3d_t;
+typedef struct Entity3d_t {
+    Vec3 position;
+    Poly_t *polygon;
+} Entity3d_t;
 
-object3d_t *object3d_new(vec3 p_position, polygon_t *p_polygon)
+Entity3d_t *object3d_new(Vec3 p_position, Poly_t *p_polygon)
 {
-    object3d_t *t_obj = malloc(sizeof(object3d_t));
+    Entity3d_t *t_obj = malloc(sizeof(Entity3d_t));
     t_obj->position.x = p_position.x;
     t_obj->position.y = p_position.y;
     t_obj->position.z = p_position.z;
@@ -37,12 +34,12 @@ object3d_t *object3d_new(vec3 p_position, polygon_t *p_polygon)
 }
 
 /****************************************************/
-const triangle_t tri[] =
+const Tri_t tri[] =
     {{{{ 20, 10, 10, 0xff0000 }}}
     ,{{{ 30, 30, 10, 0xff0000 }}}
     ,{{{ 10, 30, 10, 0xff0000 }}}};
 
-polygon_t cube = {tri, sizeof(tri)};
+Poly_t cube = {tri, sizeof(tri)};
 
 int main(int argc, char *argv[]) {
     /* init SDL */
@@ -50,10 +47,10 @@ int main(int argc, char *argv[]) {
     SDL_Renderer *mainRenderer;
     SDL_Texture *framebuffer;
 
-    screen_t screen = {320, 240, NULL, 320};
+    Screen_t screen = {320, 240, NULL, 320};
     set_screen(&screen); // it's on the stack I guess but fuck it
 
-    object3d_t *player = object3d_new((vec3){10, 10, 10}, &cube);
+    Entity3d_t *player = object3d_new((Vec3){10, 10, 10}, &cube);
 
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
         fprintf(stderr, "failed to init SDL\n");
@@ -79,8 +76,8 @@ int main(int argc, char *argv[]) {
 
     int running = 1;
 
-   int *buffer = malloc(ballBitmapLen);
-    lzssDecompress(buffer, (char*)ball_lz77Bitmap);
+    int *buffer = malloc(ballBitmapLen);
+    //lzssDecompress(buffer, (char*)ball_lz77Bitmap);
 
     while(running) {
         SDL_Event event;
@@ -119,7 +116,7 @@ int main(int argc, char *argv[]) {
         iangle+=32;
         draw_rotated_image_i(ballBitmap, 64, 64, iangle);
 
-        /*for(int i = 0; i < player->polygon->size/sizeof(vec4); i++) {*/
+        /*for(int i = 0; i < player->polygon->size/sizeof(Vec4); i++) {*/
             /*plot(player->polygon->triangles->v[i].x+frame, player->polygon->triangles->v[i].y, player->polygon->triangles->v[i].w);*/
         /*}*/
 

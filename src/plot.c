@@ -2,7 +2,7 @@
 #include "numbers.h"
 #include "plot.h"
 
-inline void set_screen(screen_t * const p_screen){
+inline void set_screen(Screen_t * const p_screen){
   g_Screen = p_screen;
 }
 
