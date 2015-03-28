@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
         /*draw_rotated_image(ballBitmap, 64, 64, angle);*/
         static int iangle = 0;
         iangle+=32;
-        draw_rotated_image_i(ballBitmap, 64, 64, iangle);
+        //draw_rotated_image_i(ballBitmap, 64, 64, iangle);
 
         /*for(int i = 0; i < player->polygon->size/sizeof(Vec4); i++) {*/
             /*plot(player->polygon->triangles->v[i].x+frame, player->polygon->triangles->v[i].y, player->polygon->triangles->v[i].w);*/

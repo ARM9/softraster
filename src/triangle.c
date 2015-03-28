@@ -3,7 +3,7 @@
 //#include "types.h"
 #include "vectors.h"
 
-void fillTriangle(Tri_t) {
+void fillTriangle(Tri_t tri) {
 
 }
 

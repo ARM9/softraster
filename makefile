@@ -20,7 +20,7 @@ endif
 ifeq ($(OS),Windows_NT)
 	LIBS	:= -lmingw32 -lSDL2main -lSDL2 -lm
 else
-	LIBS	:= -lSDL2
+	LIBS	:= -lSDL2main -lSDL2 -lm
 endif
 
 SOURCES		:= src gfx

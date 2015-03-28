@@ -1,4 +1,5 @@
 build/
+softraster
 *.obj
 *.o
 *.exe
