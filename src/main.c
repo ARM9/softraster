@@ -4,6 +4,7 @@
 
 #include "assets.h"
 
+#include "globals.h"
 #include "list.h"
 #include "lzss.h"
 #include "numbers.h"
@@ -43,11 +44,13 @@ Poly_t cube = {tri, sizeof(tri)};
 
 int main(int argc, char *argv[]) {
     /* init SDL */
+
+    argc = argv[0];
     SDL_Window *mainWindow;
     SDL_Renderer *mainRenderer;
     SDL_Texture *framebuffer;
 
-    Screen_t screen = {320, 240, NULL, 320};
+    Screen_t screen = {WIDTH, HEIGHT, NULL, 0};//WIDTH};
     set_screen(&screen); // it's on the stack I guess but fuck it
 
     Entity3d_t *player = object3d_new((Vec3){10, 10, 10}, &cube);
@@ -105,9 +108,10 @@ int main(int argc, char *argv[]) {
 
         draw_line2(20, 20, 20-2, 20-14, 0xff0000);
 
-        draw_circle(100, 100, 100, 0x123456);
-        draw_circle_fast(150, 50, 50, 0xabcdef);
-        plot(frame % screen.width, (100+(isin(frame<<8)>>8)) % screen.height, 0xff0000);
+        draw_circle_loop(100, 100, 100, 0x123456);
+        draw_circle_branch(150, 50, 50, 0xabcdef);
+
+        plot(frame % screen.width, (100+(isin(frame<<8)>>8)) % screen.height, 0xffffff);
 
         static double angle = 0.0;
         angle += 0.01;
@@ -115,10 +119,6 @@ int main(int argc, char *argv[]) {
         static int iangle = 0;
         iangle+=32;
         //draw_rotated_image_i(ballBitmap, 64, 64, iangle);
-
-        /*for(int i = 0; i < player->polygon->size/sizeof(Vec4); i++) {*/
-            /*plot(player->polygon->triangles->v[i].x+frame, player->polygon->triangles->v[i].y, player->polygon->triangles->v[i].w);*/
-        /*}*/
 
         SDL_UnlockTexture(framebuffer);
 

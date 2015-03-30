@@ -1,4 +1,5 @@
 #include "precompiled.h"
+#include "globals.h"
 #include "numbers.h"
 #include "plot.h"
 
@@ -7,7 +8,7 @@ inline void set_screen(Screen_t * const p_screen){
 }
 
 inline void plot(int x, int y, int color) {
-  g_Screen->pixels[y * g_Screen->pitch + x] = color;
+  g_Screen->pixels[y * WIDTH + x] = color; //g_Screen->pitch + x] = color;
   /*g_Screen->pixels[y * 320 + x] = color;*/
 }
 
@@ -20,7 +21,7 @@ inline void framebuffer_clear(int color)
   }
 }
 
-void draw_circle(int u, int v, int r, int color)
+void draw_circle_loop(int u, int v, int r, int color)
 {
     int sqrr, rsqrt2, x, y;
     sqrr = r * r;
@@ -38,7 +39,7 @@ void draw_circle(int u, int v, int r, int color)
     }
 }
 
-void draw_circle_fast(int x1, int y1, int r, int color)
+void draw_circle_branch(int x1, int y1, int r, int color)
 {
   int x2 = r;
   int y2 = 0;
@@ -182,4 +183,5 @@ void draw_rotated_image(int *img, int width, int height, double angle)
     }
   }
 }
+
 // vim:sts=2 sw=2

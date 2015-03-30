@@ -53,16 +53,18 @@ build:
 	@mkdir -p $@
 
 clean:
+	@echo cleaning
 	@rm -rf $(OFILES) $(OUTPUT) $(PRECOMPILED)
 
-run: $(OUTPUT)
+run: all
 	./$(OUTPUT)
 
-debug: $(OUTPUT)
+debug: all
 	$(GDB) $(OUTPUT)
 #	$(DDD) --args $(OUTPUT)
 
 $(OUTPUT): $(PRECOMPILED) $(OFILES)
+	@echo linking $@
 	$(LD) $(CFLAGS) -o $@ $(OFILES) $(LIBS)
 
 $(PRECOMPILED) : include/precompiled.h
