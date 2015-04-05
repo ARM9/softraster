@@ -2,11 +2,8 @@
 #define TRIANGLE_H
 #include "vectors.h"
 
-typedef struct Tri_t {
-    Vec4 v[3];
-} Tri_t;
-
-void fill_triangle(Tri_t *tri);
+void fill_triangle(const Vec2 *tri);
+void barycentric_triangle(const Vec2 *tri, int color);
 
 #endif //TRIANGLE_H
 

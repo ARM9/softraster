@@ -35,12 +35,15 @@ Entity3d_t *object3d_new(Vec3 p_position, Poly_t *p_polygon)
 }
 
 /****************************************************/
-const Tri_t tri[] =
-    {{{{ 20, 10, 10, 0xff0000 }}}
-    ,{{{ 30, 30, 10, 0xff0000 }}}
-    ,{{{ 10, 30, 10, 0xff0000 }}}};
+const Vec2 tri[] =
+    {{50, 40 }
+    ,{100, 55}
+    ,{30, 70 }};
 
-Poly_t cube = {tri, sizeof(tri)};
+const Trif_t tri_f[] =
+    {{ 20.f, 10.f, 10.f, 1.0f }
+    ,{ 30.f, 30.f, 10.f, 1.0f }
+    ,{ 10.f, 30.f, 10.f, 1.0f }};
 
 int main(int argc, char *argv[]) {
     /* init SDL */
@@ -52,8 +55,6 @@ int main(int argc, char *argv[]) {
 
     Screen_t screen = {WIDTH, HEIGHT, NULL, 0};//WIDTH};
     set_screen(&screen); // it's on the stack I guess but fuck it
-
-    Entity3d_t *player = object3d_new((Vec3){10, 10, 10}, &cube);
 
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
         fprintf(stderr, "failed to init SDL\n");
@@ -79,7 +80,7 @@ int main(int argc, char *argv[]) {
 
     int running = 1;
 
-    int *buffer = malloc(ballBitmapLen);
+    //int *buffer = malloc(ballBitmapLen);
     //lzssDecompress(buffer, (char*)ball_lz77Bitmap);
 
     while(running) {
@@ -104,9 +105,9 @@ int main(int argc, char *argv[]) {
 
         draw_line2(80, 50, 80+(int)(sinf(frame/180.f)*20.f), 50+(int)(cosf(frame/180.f)*20.f), 0xbada55);
         draw_line2(80+(int)(sinf(frame/180.f)*20.f), 100+(int)(cosf(frame/180.f)*20.f), 80, 100, 0xbada55);
-        draw_line2(1, 1, 1, 1, 0xbada55);
 
-        draw_line2(20, 20, 20-2, 20-14, 0xff0000);
+
+        barycentric_triangle(&tri, 0x00ff00);
 
         draw_circle_loop(100, 100, 100, 0x123456);
         draw_circle_branch(150, 50, 50, 0xabcdef);
@@ -119,6 +120,7 @@ int main(int argc, char *argv[]) {
         static int iangle = 0;
         iangle+=32;
         //draw_rotated_image_i(ballBitmap, 64, 64, iangle);
+
 
         SDL_UnlockTexture(framebuffer);
 

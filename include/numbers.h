@@ -29,4 +29,7 @@ s32 isin(s32 x);
 #define icos(x) isin(x+0x2000)
 float mysinf(float a);
 
+#define max(x, y) ((x) > (y) ? (x) : (y))
+#define min(x, y) ((x) < (y) ? (x) : (y))
+
 #endif //NUMBERS_H

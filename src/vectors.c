@@ -27,6 +27,10 @@ inline fixed vec2Dot(Vec2 *a, Vec2 *b){
     return fixmul(a->x, b->x) + fixmul(a->y, b->y);
 }
 
+inline fixed vec2Cross(Vec2 *a, Vec2 *b){
+    return fixmul(a->x, b->y) - fixmul(a->y, b->x);
+}
+
 /* 3D Vectors ************************/
 inline void vec3Set(Vec3 *v, fixed x, fixed y, fixed z){
     v->x = x;
