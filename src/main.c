@@ -14,41 +14,15 @@
 #include "matrix2.h"
 #include "vectors.h"
 
-typedef struct Poly_t {
-    Tri_t *triangles;
-    int size;
-} Poly_t;
-
-typedef struct Entity3d_t {
-    Vec3 position;
-    Poly_t *polygon;
-} Entity3d_t;
-
-Entity3d_t *object3d_new(Vec3 p_position, Poly_t *p_polygon)
-{
-    Entity3d_t *t_obj = malloc(sizeof(Entity3d_t));
-    t_obj->position.x = p_position.x;
-    t_obj->position.y = p_position.y;
-    t_obj->position.z = p_position.z;
-    t_obj->polygon = p_polygon;
-    return t_obj;
-}
-
 /****************************************************/
-const Vec2 tri[] =
-    {{50, 40 }
-    ,{100, 55}
-    ,{30, 70 }};
-
-const Trif_t tri_f[] =
-    {{ 20.f, 10.f, 10.f, 1.0f }
-    ,{ 30.f, 30.f, 10.f, 1.0f }
-    ,{ 10.f, 30.f, 10.f, 1.0f }};
+Vec2 tri[3] =
+    {{150, 40 }
+    ,{200, 55}
+    ,{130, 70 }};
 
 int main(int argc, char *argv[]) {
     /* init SDL */
 
-    argc = argv[0];
     SDL_Window *mainWindow;
     SDL_Renderer *mainRenderer;
     SDL_Texture *framebuffer;
@@ -107,7 +81,15 @@ int main(int argc, char *argv[]) {
         draw_line2(80+(int)(sinf(frame/180.f)*20.f), 100+(int)(cosf(frame/180.f)*20.f), 80, 100, 0xbada55);
 
 
-        barycentric_triangle(&tri, 0x00ff00);
+
+        draw_triangle(tri, 0x0000ff);
+        tri[0].y += 50;
+        tri[1].y += 50;
+        tri[2].y += 50;
+        barycentric_triangle(tri, 0x00ff00);
+        tri[0].y -= 50;
+        tri[1].y -= 50;
+        tri[2].y -= 50;
 
         draw_circle_loop(100, 100, 100, 0x123456);
         draw_circle_branch(150, 50, 50, 0xabcdef);
