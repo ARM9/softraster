@@ -6,27 +6,21 @@
 #include "triangle.h"
 #include "vectors.h"
 
-u16 g_EdgeBuffer[WIDTH * HEIGHT + 2];
+unsigned g_EdgeBuffer[WIDTH * HEIGHT + 2];
 
-/*void fill_triangle(Tri_t *tri)
+void draw_horizontal_line(int x1, int y1, int x2, unsigned color)
 {
-    //sort triangle Y coords
-    //bucket_sort(tri);
-    //clear edge buffer
-    for(int y = 0; y < HEIGHT; y++){
-        for(int x = 0; x < WIDTH; x+=2){
-            g_EdgeBuffer[x + y * 2] = WIDTH;
-            g_EdgeBuffer[x + 1 + y * 2] = 0;
-        }
+    if(x2 < x1){
+        int tmp = x1;
+        x1 = x2;
+        x2 = tmp;
     }
-    //draw lines to edge buffer
-    
-    //draw edge buffer
-    
+    for(;x1 <= x2; x1++){
+        plot(x1, y1, color);
+    }
 }
-*/
 
-inline void sort_vertices_asc_y(Vec2 v[3])
+void sort_vertices_asc_y(Vec2 v[3])
 {
     Vec2 vtmp;
     if(v[0].y > v[1].y){
@@ -45,7 +39,44 @@ inline void sort_vertices_asc_y(Vec2 v[3])
         v[2] = vtmp;
     }
 }
-inline void fill_flat_bottom_triangle(Vec2 vt0, Vec2 vt1, Vec2 vt2, int color)
+
+
+void draw_triangle(Vec2 v[3], unsigned color)
+{
+    //sort triangle Y coords
+    sort_vertices_asc_y(v);
+    if(v[0].y > HEIGHT || v[2].y < 0){
+        return;
+    }
+    //clear edge buffer? just draw from min_y to max_y
+    /*for(int y = 0; y < HEIGHT; y++){
+        for(int x = 0; x < WIDTH; x+=2){
+            g_EdgeBuffer[x + y * 2] = WIDTH;
+            g_EdgeBuffer[x + 1 + y * 2] = 0;
+        }
+    }*/
+    //draw lines to edge buffer
+    //int y = min(HEIGHT, max(v[0].y, 0));
+    if(v[0].y != v[1].y){
+        for(int y = v[0].y; y < v[1].y; y++){
+            draw_horizontal_line(v[0].x, y, v[1].x, color);
+        }
+    }else{
+        // flat top
+        for(int y = v[0].y; y < v[2].y; y++){
+            draw_horizontal_line(v[0].x, y, v[1].x, color);
+        }
+    }
+    // draw second triangle if not flat bottom
+    if(v[1].y != v[2].y){
+        for(int y = v[1].y; y < v[2].y; y++){
+            draw_horizontal_line(v[1].x, y, v[2].x, color);
+        }
+    }
+    //draw edge buffer
+}
+
+void fill_flat_bottom_triangle(Vec2 vt0, Vec2 vt1, Vec2 vt2, unsigned color)
 {
     float slope1 = (float)(vt1.x - vt0.x) / (float)(vt1.y - vt0.y);
     float slope2 = (float)(vt2.x - vt0.x) / (float)(vt2.y - vt0.y);
@@ -55,12 +86,13 @@ inline void fill_flat_bottom_triangle(Vec2 vt0, Vec2 vt1, Vec2 vt2, int color)
 
     for (int scanlineY = vt0.y; scanlineY <= vt1.y; scanlineY++)
     {
-        draw_line2((int)x1, scanlineY, (int)x2, scanlineY, color);
+        draw_horizontal_line((int)x1, scanlineY, (int)x2, color);
         x1 += slope1;
         x2 += slope2;
     }
 }
-inline void fill_flat_top_triangle(Vec2 vt0, Vec2 vt1, Vec2 vt2, int color)
+
+void fill_flat_top_triangle(Vec2 vt0, Vec2 vt1, Vec2 vt2, unsigned color)
 {
     float slope1 = (float)(vt2.x - vt0.x) / (float)(vt2.y - vt0.y);
     float slope2 = (float)(vt2.x - vt1.x) / (float)(vt2.y - vt1.y);
@@ -72,11 +104,11 @@ inline void fill_flat_top_triangle(Vec2 vt0, Vec2 vt1, Vec2 vt2, int color)
     {
         x1 -= slope1;
         x2 -= slope2;
-        draw_line2((int)x1, scanlineY, (int)x2, scanlineY, color);
+        draw_horizontal_line((int)x1, scanlineY, (int)x2, color);
     }
 }
 
-void draw_triangle(Vec2 tri[3], int color)
+void fill_triangle(Vec2 tri[3], unsigned color)
 {
     Vec2 vt0, vt1, vt2, vt3;
 
@@ -104,7 +136,7 @@ int crossProduct(Vec2 *a, Vec2 *b)
 }
 
 // not very efficient
-void barycentric_triangle(const Vec2 tri[3], int color)
+void barycentric_triangle(const Vec2 tri[3], unsigned color)
 {
 
     int maxX = max(tri[0].x, max(tri[1].x, tri[2].x));

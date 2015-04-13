@@ -15,6 +15,12 @@
 #include "vectors.h"
 
 /****************************************************/
+
+Vec3 tri3[3] =
+    {{150, 40, 1}
+    ,{200, 55, 1}
+    ,{130, 70, 1}};
+
 Vec2 tri[3] =
     {{150, 40 }
     ,{200, 55}
@@ -81,6 +87,12 @@ int main(int argc, char *argv[]) {
         draw_line2(80+(int)(sinf(frame/180.f)*20.f), 100+(int)(cosf(frame/180.f)*20.f), 80, 100, 0xbada55);
 
 
+        tri[0].x = tri3[0].x + (isin((frame<<7)+0x4000)>>7);
+        tri[1].x = tri3[1].x + (isin((frame<<7)+0x2000)>>7);
+        tri[2].x = tri3[2].x + (isin((frame<<7)+0x6000)>>7);
+        tri[0].y = tri3[0].y + (isin((frame<<7)+0x4000)>>7);
+        tri[1].y = tri3[1].y + (isin((frame<<7)+0x8000)>>7);
+        tri[2].y = tri3[2].y + (isin((frame<<7)+0x6000)>>7);
 
         draw_triangle(tri, 0x0000ff);
         tri[0].y += 50;

@@ -15,12 +15,15 @@ ifeq (1,$(DEBUG))
   	CFLAGS	:= $(CFLAGS) -g -Og -DDEBUG
 else
   	CFLAGS := $(CFLAGS) -O2 -fomit-frame-pointer
+	LDFLAGS := $(LDFLAGS) -s
 endif
 
 ifeq ($(OS),Windows_NT)
 	LIBS	:= -lmingw32 -lSDL2main -lSDL2 -lm
+	export OUTPUT	:= $(shell basename $(CURDIR)).exe
 else
 	LIBS	:= -lSDL2main -lSDL2 -lm
+	export OUTPUT	:= $(shell basename $(CURDIR))
 endif
 
 SOURCES		:= src gfx
@@ -36,8 +39,6 @@ PRECOMPILED	:= include/precompiled.h.gch
 
 export VPATH	:= $(foreach dir,$(SOURCES),$(CURDIR)/$(dir))
 export INCLUDE	:= $(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir))
-
-export OUTPUT	:= $(shell basename $(CURDIR))
 #--------------------------------------
 build/%.o : %.c
 	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
@@ -65,7 +66,7 @@ debug: all
 
 $(OUTPUT): $(PRECOMPILED) $(OFILES)
 	@echo linking $@
-	$(LD) $(CFLAGS) -o $@ $(OFILES) $(LIBS)
+	$(LD) $(CFLAGS) $(LDFLAGS) -o $@ $(OFILES) $(LIBS)
 
 $(PRECOMPILED) : include/precompiled.h
 	$(CC) $(CFLAGS) $(INCLUDE) $<
