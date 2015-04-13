@@ -5,6 +5,7 @@ AS	:= gcc
 LD	:= gcc
 GDB	:= gdb
 DDD := ddd
+PROF	:= gprof
 LZSS	:= lzss
 
 CFLAGS	:= -Wall -Wextra -pedantic -std=gnu99 -march=native -masm=intel
@@ -14,8 +15,10 @@ LDFLAGS :=
 ifeq (1,$(DEBUG))
   	CFLAGS	:= $(CFLAGS) -g -Og -DDEBUG
 else
-  	CFLAGS := $(CFLAGS) -O2 -fomit-frame-pointer
-	LDFLAGS := $(LDFLAGS) -s
+  	CFLAGS := $(CFLAGS) -O2 -pg
+#-fomit-frame-pointer 
+	LDFLAGS := $(LDFLAGS) -pg
+#-s
 endif
 
 ifeq ($(OS),Windows_NT)
@@ -63,6 +66,9 @@ run: all
 debug: all
 	$(GDB) $(OUTPUT)
 #	$(DDD) --args $(OUTPUT)
+
+prof: all
+	$(PROF) -b $(OUTPUT) > profile.txt
 
 $(OUTPUT): $(PRECOMPILED) $(OFILES)
 	@echo linking $@

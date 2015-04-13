@@ -2,6 +2,7 @@ build/
 softraster
 *.obj
 *.o
+*.out
 *.exe
 *.dll
 *.h.gch
