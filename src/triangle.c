@@ -6,7 +6,8 @@
 #include "triangle.h"
 #include "vectors.h"
 
-unsigned g_EdgeBuffer[WIDTH * HEIGHT + 2];
+int g_EdgeBufferL[HEIGHT + 1];
+int g_EdgeBufferR[HEIGHT + 1];
 
 void draw_horizontal_line(int x1, int y1, int x2, unsigned color)
 {
@@ -40,40 +41,58 @@ void sort_vertices_asc_y(Vec2 v[3])
     }
 }
 
+void edge_detect(Vec2 v0, Vec2 v1)
+{
+    float x1 = v0.x,
+        x2 = v1.x,
+        y1 = v0.y,
+        y2 = v1.y;
+
+    if(y1 > y2){
+        float tmp = x1;
+        x1 = x2;
+        x2 = tmp;
+        tmp = y1;
+        y1 = y2;
+        y2 = tmp;
+    }
+
+    float dx;
+    if(y1 == y2){
+        dx = x2 - x1;
+    }else{
+        dx = (x2 - x1) / (y2 - y1);
+    }
+
+    for(int i = y1; i <= y2; i++){
+        if(x1 < g_EdgeBufferL[i])
+            g_EdgeBufferL[i] = x1;
+        if(x1 > g_EdgeBufferR[i])
+            g_EdgeBufferR[i] = x1;
+        x1 += dx;
+    }
+}
 
 void draw_triangle(Vec2 v[3], unsigned color)
 {
-    //sort triangle Y coords
+    // possibly faster to just not sort the vectors to find min/max y
     sort_vertices_asc_y(v);
-    if(v[0].y > HEIGHT || v[2].y < 0){
-        return;
+    int min_y = v[0].y;
+    int max_y = v[2].y;
+
+    for(int i = min_y; i < max_y; i++){
+        g_EdgeBufferL[i] = WIDTH;
+        g_EdgeBufferR[i] = 0;
     }
-    //clear edge buffer? just draw from min_y to max_y
-    /*for(int y = 0; y < HEIGHT; y++){
-        for(int x = 0; x < WIDTH; x+=2){
-            g_EdgeBuffer[x + y * 2] = WIDTH;
-            g_EdgeBuffer[x + 1 + y * 2] = 0;
-        }
-    }*/
-    //draw lines to edge buffer
-    //int y = min(HEIGHT, max(v[0].y, 0));
-    if(v[0].y != v[1].y){
-        for(int y = v[0].y; y < v[1].y; y++){
-            draw_horizontal_line(v[0].x, y, v[1].x, color);
-        }
-    }else{
-        // flat top
-        for(int y = v[0].y; y < v[2].y; y++){
-            draw_horizontal_line(v[0].x, y, v[1].x, color);
-        }
+    edge_detect(v[0], v[1]);
+    edge_detect(v[1], v[2]);
+    edge_detect(v[2], v[0]);
+
+    for(int y = min_y; y < max_y; y++){
+        if(g_EdgeBufferL[y] <= g_EdgeBufferR[y])
+            for(int x = g_EdgeBufferL[y]; x < g_EdgeBufferR[y]; x++)
+                plot(x, y, color);
     }
-    // draw second triangle if not flat bottom
-    if(v[1].y != v[2].y){
-        for(int y = v[1].y; y < v[2].y; y++){
-            draw_horizontal_line(v[1].x, y, v[2].x, color);
-        }
-    }
-    //draw edge buffer
 }
 
 void fill_flat_bottom_triangle(Vec2 vt0, Vec2 vt1, Vec2 vt2, unsigned color)
